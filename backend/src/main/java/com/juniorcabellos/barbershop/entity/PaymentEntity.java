@@ -13,14 +13,14 @@ public class PaymentEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String method;
 
     public PaymentEntity() {
     }
 
     public PaymentEntity(Long id, String name) {
         this.id = id;
-        this.name = name;
+        this.method = name;
     }
 
     public Long getId() {
@@ -32,11 +32,11 @@ public class PaymentEntity {
     }
 
     public String getName() {
-        return name;
+        return method;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.method = name;
     }
 
     @Override

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS tb_payment (
+CREATE TABLE tb_payment (
     id SERIAL PRIMARY KEY,
-    method VARCHAR(20)
+    method VARCHAR(20) NOT NULL
 );
