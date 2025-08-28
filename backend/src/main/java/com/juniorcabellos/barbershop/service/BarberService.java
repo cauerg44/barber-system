@@ -1,6 +1,6 @@
 package com.juniorcabellos.barbershop.service;
 
-import com.juniorcabellos.barbershop.dto.BarberResponse;
+import com.juniorcabellos.barbershop.dto.response.BarberResponse;
 import com.juniorcabellos.barbershop.entity.BarberEntity;
 import com.juniorcabellos.barbershop.repository.BarberRepository;
 import com.juniorcabellos.barbershop.service.exceptions.ResourceNotFoundException;

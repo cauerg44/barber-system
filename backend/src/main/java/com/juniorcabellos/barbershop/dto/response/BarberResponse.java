@@ -1,4 +1,4 @@
-package com.juniorcabellos.barbershop.dto;
+package com.juniorcabellos.barbershop.dto.response;
 
 import com.juniorcabellos.barbershop.entity.BarberEntity;
 

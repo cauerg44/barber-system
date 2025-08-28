@@ -1,7 +1,7 @@
 package com.juniorcabellos.barbershop.controller;
 
-import com.juniorcabellos.barbershop.dto.response.BarberResponse;
-import com.juniorcabellos.barbershop.service.BarberService;
+import com.juniorcabellos.barbershop.dto.response.PaymentResponse;
+import com.juniorcabellos.barbershop.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,23 +11,23 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/barbers")
-public class BarberController {
+@RequestMapping(value = "/payments")
+public class PaymentController {
 
-    private final BarberService service;
+    private final PaymentService service;
 
-    public BarberController(BarberService service) {
+    public PaymentController(PaymentService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<List<BarberResponse>> findAllBarbers() {
+    public ResponseEntity<List<PaymentResponse>> findAllBarbers() {
         var list = service.findAll();
         return ResponseEntity.ok(list);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<BarberResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<PaymentResponse> findById(@PathVariable Long id) {
         var response = service.findById(id);
         return ResponseEntity.ok(response);
     }
