@@ -23,7 +23,7 @@ public class PaymentService {
     public List<PaymentResponse> findAll() {
         List<PaymentEntity> list = repository.findAll();
         return list.stream()
-                .map(it -> new PaymentResponse(it.getId(), it.getName()))
+                .map(it -> new PaymentResponse(it.getId(), it.getMethod()))
                 .toList();
     }
 

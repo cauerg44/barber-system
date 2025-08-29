@@ -31,12 +31,12 @@ public class PaymentEntity {
         this.id = id;
     }
 
-    public String getName() {
+    public String getMethod() {
         return method;
     }
 
-    public void setName(String name) {
-        this.method = name;
+    public void setName(String method) {
+        this.method = method;
     }
 
     @Override

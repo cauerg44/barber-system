@@ -7,6 +7,6 @@ public record PaymentResponse(
         String name
 ) {
     public PaymentResponse(PaymentEntity entity) {
-        this(entity.getId(), entity.getName());
+        this(entity.getId(), entity.getMethod());
     }
 }
