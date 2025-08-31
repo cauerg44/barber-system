@@ -18,9 +18,6 @@ public record AppointmentCreateRequest(
         @NotNull(message = "Deve ter uma forma de pagamento")
         Long paymentId,
 
-        @NotNull(message = "Campo não pode ser inválido")
-        AppointmentStatus status,
-
         List<Long> servicesIds,
 
         @NotNull(message = "Campo não pode ser inválido")

@@ -46,7 +46,6 @@ public class AppointmentService {
         appointment.setClientName(request.clientName());
         appointment.setBarber(barber);
         appointment.setPayment(payment);
-        appointment.setStatus(request.status());
         appointment.setTotalValue(request.totalValue());
 
         if (request.servicesIds() != null) {
