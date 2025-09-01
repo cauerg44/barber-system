@@ -1,13 +1,13 @@
 package com.juniorcabellos.barbershop.controller;
 
 import com.juniorcabellos.barbershop.dto.request.AppointmentCreateRequest;
+import com.juniorcabellos.barbershop.dto.response.AppointmentResponse;
 import com.juniorcabellos.barbershop.service.AppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/appointments")
@@ -17,6 +17,18 @@ public class AppointmentController {
 
     public AppointmentController(AppointmentService service) {
         this.service = service;
+    }
+
+    @GetMapping("/waiting")
+    public ResponseEntity<List<AppointmentResponse>> getClientsWaiting() {
+        var result = service.findAllClientsWaiting();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/cutting")
+    public ResponseEntity<List<AppointmentResponse>> getClientsCutting() {
+        var result = service.findAllClientsCutting();
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping

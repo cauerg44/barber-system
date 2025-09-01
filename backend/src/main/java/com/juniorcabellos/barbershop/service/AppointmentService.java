@@ -1,6 +1,7 @@
 package com.juniorcabellos.barbershop.service;
 
 import com.juniorcabellos.barbershop.dto.request.AppointmentCreateRequest;
+import com.juniorcabellos.barbershop.dto.response.AppointmentResponse;
 import com.juniorcabellos.barbershop.entity.AppointmentEntity;
 import com.juniorcabellos.barbershop.entity.BarberEntity;
 import com.juniorcabellos.barbershop.entity.PaymentEntity;
@@ -11,6 +12,8 @@ import com.juniorcabellos.barbershop.repository.PaymentRepository;
 import com.juniorcabellos.barbershop.repository.ServiceItemRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class AppointmentService {
@@ -25,6 +28,22 @@ public class AppointmentService {
         this.barberRepository = barberRepository;
         this.paymentRepository = paymentRepository;
         this.serviceItemRepository = serviceItemRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppointmentResponse> findAllClientsWaiting() {
+        List<AppointmentEntity> list = appointmentRepository.findClientsWaiting();
+        return list.stream()
+                .map(AppointmentResponse::new)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppointmentResponse> findAllClientsCutting() {
+        List<AppointmentEntity> list = appointmentRepository.findClientsCutting();
+        return list.stream()
+                .map(AppointmentResponse::new)
+                .toList();
     }
 
     @Transactional
