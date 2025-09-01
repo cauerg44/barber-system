@@ -1,6 +1,7 @@
 package com.juniorcabellos.barbershop.controller;
 
 import com.juniorcabellos.barbershop.dto.request.AppointmentCreateRequest;
+import com.juniorcabellos.barbershop.dto.request.AppointmentUpdateRequest;
 import com.juniorcabellos.barbershop.dto.response.AppointmentResponse;
 import com.juniorcabellos.barbershop.service.AppointmentService;
 import jakarta.validation.Valid;
@@ -35,5 +36,11 @@ public class AppointmentController {
     public ResponseEntity<Void> saveAppointment(@RequestBody @Valid AppointmentCreateRequest request) {
         service.save(request);
         return ResponseEntity.created(null).build();
+    }
+
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<Void> updateAppointment(@PathVariable Long id, @RequestBody @Valid AppointmentUpdateRequest request) {
+        service.update(id, request);
+        return ResponseEntity.noContent().build();
     }
 }

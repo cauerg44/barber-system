@@ -1,6 +1,7 @@
 package com.juniorcabellos.barbershop.service;
 
 import com.juniorcabellos.barbershop.dto.request.AppointmentCreateRequest;
+import com.juniorcabellos.barbershop.dto.request.AppointmentUpdateRequest;
 import com.juniorcabellos.barbershop.dto.response.AppointmentResponse;
 import com.juniorcabellos.barbershop.entity.AppointmentEntity;
 import com.juniorcabellos.barbershop.entity.BarberEntity;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AppointmentService {
@@ -23,11 +25,14 @@ public class AppointmentService {
     private final PaymentRepository paymentRepository;
     private final ServiceItemRepository serviceItemRepository;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, BarberRepository barberRepository, PaymentRepository paymentRepository, ServiceItemRepository serviceItemRepository) {
+    private final EntityFinder entityFinder;
+
+    public AppointmentService(AppointmentRepository appointmentRepository, BarberRepository barberRepository, PaymentRepository paymentRepository, ServiceItemRepository serviceItemRepository, EntityFinder entityFinder) {
         this.appointmentRepository = appointmentRepository;
         this.barberRepository = barberRepository;
         this.paymentRepository = paymentRepository;
         this.serviceItemRepository = serviceItemRepository;
+        this.entityFinder = entityFinder;
     }
 
     @Transactional(readOnly = true)
@@ -54,6 +59,21 @@ public class AppointmentService {
         appointmentRepository.save(appointmentEntity);
     }
 
+    @Transactional
+    public void update(Long id, AppointmentUpdateRequest request) {
+
+        AppointmentEntity appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+
+        switch (appointment.getStatus()) {
+            case AGUARDANDO -> updateWhenWaiting(appointment, request);
+            case CORTANDO -> updateWhenCutting(appointment, request);
+            case FINALIZADO -> throw new RuntimeException("Agendamento finalizado não pode ser alterado");
+        }
+
+        appointmentRepository.save(appointment);
+    }
+
     private AppointmentEntity requestToEntity(AppointmentCreateRequest request) {
         BarberEntity barber = barberRepository.findById(request.barberId())
                 .orElseThrow(() -> new RuntimeException("Barbeiro não encontrado"));
@@ -76,5 +96,27 @@ public class AppointmentService {
         }
 
         return appointment;
+    }
+
+    private void updateWhenWaiting(AppointmentEntity appointment, AppointmentUpdateRequest request) {
+        Optional.ofNullable(request.barberId())
+                .ifPresent(barberId -> appointment.setBarber(entityFinder.getBarber(barberId)));
+
+        Optional.ofNullable(request.paymentId())
+                .ifPresent(paymentId -> appointment.setPayment(entityFinder.getPayment(paymentId)));
+
+        Optional.ofNullable(request.totalValue())
+                .ifPresent(appointment::setTotalValue);
+    }
+
+    private void updateWhenCutting(AppointmentEntity appointment, AppointmentUpdateRequest request) {
+        if (request.serviceIds() != null && !request.serviceIds().isEmpty()) {
+            appointment.getServices().clear();
+            request.serviceIds()
+                    .forEach(serviceId -> appointment.addService(entityFinder.getService(serviceId)));
+        }
+
+        Optional.ofNullable(request.totalValue())
+                .ifPresent(appointment::setTotalValue);
     }
 }
