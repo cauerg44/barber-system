@@ -15,9 +15,7 @@ public class EntityFinder {
     private final PaymentRepository paymentRepository;
     private final ServiceItemRepository serviceItemRepository;
 
-    public EntityFinder(BarberRepository barberRepository,
-                        PaymentRepository paymentRepository,
-                        ServiceItemRepository serviceItemRepository) {
+    public EntityFinder(BarberRepository barberRepository, PaymentRepository paymentRepository, ServiceItemRepository serviceItemRepository) {
         this.barberRepository = barberRepository;
         this.paymentRepository = paymentRepository;
         this.serviceItemRepository = serviceItemRepository;
@@ -35,6 +33,6 @@ public class EntityFinder {
 
     protected ServiceItemEntity getService(Long id) {
         return serviceItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Serviço não encontrado: " + id));
+                .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
     }
 }

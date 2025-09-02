@@ -1,13 +1,15 @@
 package com.juniorcabellos.barbershop.controller;
 
 import com.juniorcabellos.barbershop.dto.request.AppointmentCreateRequest;
-import com.juniorcabellos.barbershop.dto.request.AppointmentUpdateRequest;
+import com.juniorcabellos.barbershop.dto.request.AppointmentPatchRequest;
 import com.juniorcabellos.barbershop.dto.response.AppointmentResponse;
 import com.juniorcabellos.barbershop.service.AppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,25 +24,33 @@ public class AppointmentController {
 
     @GetMapping("/waiting")
     public ResponseEntity<List<AppointmentResponse>> getClientsWaiting() {
-        var result = service.findAllClientsWaiting();
-        return ResponseEntity.ok(result);
+        var list = service.findAllClientsWaiting();
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/cutting")
     public ResponseEntity<List<AppointmentResponse>> getClientsCutting() {
-        var result = service.findAllClientsCutting();
-        return ResponseEntity.ok(result);
+        var list = service.findAllClientsCutting();
+        return ResponseEntity.ok(list);
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveAppointment(@RequestBody @Valid AppointmentCreateRequest request) {
-        service.save(request);
-        return ResponseEntity.created(null).build();
+    public ResponseEntity<AppointmentResponse> saveAppointment(@RequestBody @Valid AppointmentCreateRequest request) {
+        var response = service.save(request);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(response.id()).toUri();
+        return ResponseEntity.created(uri).body(response);
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<Void> updateAppointment(@PathVariable Long id, @RequestBody @Valid AppointmentUpdateRequest request) {
-        service.update(id, request);
+    public ResponseEntity<AppointmentResponse> patchAppointment(@PathVariable Long id, @RequestBody @Valid AppointmentPatchRequest request) {
+        var response = service.patch(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -99,8 +99,10 @@ public class AppointmentEntity {
         return totalValue;
     }
 
-    public void setTotalValue(BigDecimal totalValue) {
-        this.totalValue = totalValue;
+    public void setTotalValue(BigDecimal value) {
+        if (value.compareTo(new BigDecimal("0.0")) > 0) {
+            this.totalValue = value;
+        }
     }
 
     public Set<ServiceItemEntity> getServices() {
