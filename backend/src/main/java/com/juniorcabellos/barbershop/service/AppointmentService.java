@@ -63,7 +63,7 @@ public class AppointmentService {
     public AppointmentResponse patch(Long id, AppointmentPatchRequest request) {
 
         AppointmentEntity appointment = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado"));
 
         if (appointment.getStatus().equals(AppointmentStatus.FINALIZADO)) {
             throw new RuntimeException("Atendimento finalizado não poder ser alterado");
@@ -124,7 +124,7 @@ public class AppointmentService {
                 .ifPresent(id -> appointment.setPayment(entityFinder.getPayment(id)));
 
         Optional.ofNullable(request.status())
-                        .ifPresent(status -> appointment.setStatus(AppointmentStatus.valueOf(status)));
+                        .ifPresent(status -> appointment.setStatus(AppointmentStatus.valueOf(status.toUpperCase())));
 
         Optional.ofNullable(request.totalValue())
                 .ifPresent(appointment::setTotalValue);
