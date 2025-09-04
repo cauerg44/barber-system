@@ -81,7 +81,7 @@ public class AppointmentService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         AppointmentEntity entity = repository.getReferenceById(id);
 
         if (!entity.getStatus().equals(AppointmentStatus.AGUARDANDO)) {
