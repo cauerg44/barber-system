@@ -51,6 +51,14 @@ public class AppointmentService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<AppointmentResponse> findAllAppointmentsFinished() {
+        List<AppointmentEntity> list = repository.findAppointmentsFinished();
+        return list.stream()
+                .map(entity -> new AppointmentResponse(entity))
+                .toList();
+    }
+
     @Transactional
     public AppointmentResponse save(AppointmentCreateRequest request) {
         AppointmentEntity entity = new AppointmentEntity();

@@ -25,6 +25,12 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     List<AppointmentEntity> findClientsCutting();
 
     @Query(value = """
+        SELECT * FROM juniorsalao.tb_appointment appointment
+        WHERE appointment.status = 'FINALIZADO';
+        """, nativeQuery = true)
+    List<AppointmentEntity> findAppointmentsFinished();
+
+    @Query(value = """
         SELECT SUM(appointment.total_value)
         FROM juniorsalao.tb_appointment appointment
         WHERE appointment.status = 'FINALIZADO' AND appointment.barber_id = :barberId

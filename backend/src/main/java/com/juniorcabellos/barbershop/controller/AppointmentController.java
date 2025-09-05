@@ -37,6 +37,12 @@ public class AppointmentController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("/finished")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsFinished() {
+        var list = service.findAllAppointmentsFinished();
+        return ResponseEntity.ok(list);
+    }
+
     @PostMapping
     public ResponseEntity<AppointmentResponse> saveAppointment(@RequestBody @Valid AppointmentCreateRequest request) {
         var response = service.save(request);
