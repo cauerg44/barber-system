@@ -37,12 +37,6 @@ public class AppointmentController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping(value = "/report")
-    public ResponseEntity<Void> sendReportByEmail() {
-        emailService.sendReportByEmail();
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping
     public ResponseEntity<AppointmentResponse> saveAppointment(@RequestBody @Valid AppointmentCreateRequest request) {
         var response = service.save(request);

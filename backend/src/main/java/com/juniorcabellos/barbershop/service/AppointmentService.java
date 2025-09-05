@@ -39,7 +39,7 @@ public class AppointmentService {
     public List<AppointmentResponse> findAllClientsWaiting() {
         List<AppointmentEntity> list = repository.findClientsWaiting();
         return list.stream()
-                .map(appointment -> new AppointmentResponse(appointment))
+                .map(entity -> new AppointmentResponse(entity))
                 .toList();
     }
 
@@ -47,7 +47,7 @@ public class AppointmentService {
     public List<AppointmentResponse> findAllClientsCutting() {
         List<AppointmentEntity> list = repository.findClientsCutting();
         return list.stream()
-                .map(appointment -> new AppointmentResponse(appointment))
+                .map(entity -> new AppointmentResponse(entity))
                 .toList();
     }
 
