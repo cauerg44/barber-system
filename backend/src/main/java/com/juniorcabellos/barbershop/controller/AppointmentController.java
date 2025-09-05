@@ -4,6 +4,7 @@ import com.juniorcabellos.barbershop.dto.request.AppointmentCreateRequest;
 import com.juniorcabellos.barbershop.dto.request.AppointmentPatchRequest;
 import com.juniorcabellos.barbershop.dto.response.AppointmentResponse;
 import com.juniorcabellos.barbershop.service.AppointmentService;
+import com.juniorcabellos.barbershop.service.EmailService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +18,11 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentService service;
+    private final EmailService emailService;
 
-    public AppointmentController(AppointmentService service) {
+    public AppointmentController(AppointmentService service, EmailService emailService) {
         this.service = service;
+        this.emailService = emailService;
     }
 
     @GetMapping("/waiting")
@@ -51,6 +54,13 @@ public class AppointmentController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteAppointmentById(@PathVariable Long id) {
         service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/finished")
+    public ResponseEntity<Void> deleteAllAppointmentsFinishedAndSendReport() {
+        emailService.sendReportByEmail();
+        service.deleteAllAndSendReportByEmail();
         return ResponseEntity.noContent().build();
     }
 }

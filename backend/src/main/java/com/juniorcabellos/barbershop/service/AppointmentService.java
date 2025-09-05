@@ -9,9 +9,6 @@ import com.juniorcabellos.barbershop.entity.PaymentEntity;
 import com.juniorcabellos.barbershop.entity.ServiceItemEntity;
 import com.juniorcabellos.barbershop.entity.enums.AppointmentStatus;
 import com.juniorcabellos.barbershop.repository.AppointmentRepository;
-import com.juniorcabellos.barbershop.repository.BarberRepository;
-import com.juniorcabellos.barbershop.repository.PaymentRepository;
-import com.juniorcabellos.barbershop.repository.ServiceItemRepository;
 import com.juniorcabellos.barbershop.service.exceptions.DatabaseException;
 import com.juniorcabellos.barbershop.service.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,16 +27,19 @@ public class AppointmentService {
 
     private final EntityFinder entityFinder;
 
-    public AppointmentService(AppointmentRepository repository, BarberRepository barberRepository, PaymentRepository paymentRepository, ServiceItemRepository serviceItemRepository, EntityFinder entityFinder) {
+    private final EmailService emailService;
+
+    public AppointmentService(AppointmentRepository repository, EntityFinder entityFinder, EmailService emailService) {
         this.repository = repository;
         this.entityFinder = entityFinder;
+        this.emailService = emailService;
     }
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> findAllClientsWaiting() {
         List<AppointmentEntity> list = repository.findClientsWaiting();
         return list.stream()
-                .map(appointment -> new AppointmentResponse(appointment))
+                .map(entity -> new AppointmentResponse(entity))
                 .toList();
     }
 
@@ -47,7 +47,7 @@ public class AppointmentService {
     public List<AppointmentResponse> findAllClientsCutting() {
         List<AppointmentEntity> list = repository.findClientsCutting();
         return list.stream()
-                .map(appointment -> new AppointmentResponse(appointment))
+                .map(entity -> new AppointmentResponse(entity))
                 .toList();
     }
 
@@ -84,8 +84,8 @@ public class AppointmentService {
     public void deleteById(Long id) {
         AppointmentEntity entity = repository.getReferenceById(id);
 
-        if (!entity.getStatus().equals(AppointmentStatus.AGUARDANDO)) {
-            throw new DatabaseException("Só é possível excluir atendimentos em espera");
+        if (entity.getStatus().equals(AppointmentStatus.CORTANDO)) {
+            throw new DatabaseException("Não é possível excluir quando o cliente estiver cortando");
         }
 
         try {
@@ -94,6 +94,12 @@ public class AppointmentService {
         catch (DataIntegrityViolationException exception) {
             throw new DatabaseException("Falha de integridade referencial");
         }
+    }
+
+    @Transactional
+    public void deleteAllAndSendReportByEmail() {
+        emailService.sendReportByEmail();
+        repository.deleteAllFinished();
     }
 
     private void requestToCreate(AppointmentCreateRequest request, AppointmentEntity appointment) {
